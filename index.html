@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debriefing AQP REV 5.0 - LATAM Airlines</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+   
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        latam: {
+                            navy: '#10006B',
+                            red: '#E2001A',
+                            blue: '#0070C0',
+                            lightBlue: '#D6E4FF',
+                            softBlue: '#EBF2FF',
+                            hoverNavy: '#0a0047',
+                            bgGray: '#F4F6FB'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+   
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 2.5rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        textarea:focus, select:focus, input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(16, 0, 107, 0.25);
+        }
+
+        .res-completo, .res-satisfactorio {
+            background-color: #DEF7EC !important;
+            color: #03543F !important;
+            font-weight: 600;
+        }
+        .res-incompleto, .res-insatisfactorio {
+            background-color: #FDE8E8 !important;
+            color: #9B1C1C !important;
+            font-weight: 600;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        @media print {
+            @page { size: landscape; margin: 6mm; }
+            body { background: white !important; color: black !important; font-size: 10px; }
+            .no-print { display: none !important; }
+            .print-full { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; }
+            textarea, select, input { border: 1px solid #94a3b8 !important; background-color: transparent !important; appearance: none; -webkit-appearance: none; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col antialiased selection:bg-latam-lightBlue selection:text-latam-navy">
+
+    <!-- TOP TOOLBAR -->
+    <header class="no-print bg-latam-navy text-white sticky top-0 z-40 shadow-md border-b border-indigo-950">
+        <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="bg-latam-red text-white p-1.5 rounded font-black text-xs tracking-wider flex items-center justify-center w-8 h-8">
+                    <span>≡</span>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold tracking-tight leading-none text-white">DEBRIEFING AQP REV 5.0</h1>
+                    <p class="text-[11px] text-slate-300">GRUPO LATAM AIRLINES — VOL. 2 QS-FASE 10 (FF.HH: TEM - CRM)</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center space-x-2 text-xs">
+                <button onclick="openFFHHModal()" class="bg-indigo-900/80 hover:bg-indigo-800 text-indigo-100 px-3 py-1.5 rounded-lg border border-indigo-700 flex items-center space-x-1.5 transition">
+                    <i class="fa-solid fa-list-check text-cyan-400"></i>
+                    <span class="hidden sm:inline">Resumen FFHH</span>
+                </button>
+               
+                <button onclick="openGuideModal()" class="bg-indigo-900/80 hover:bg-indigo-800 text-indigo-100 px-3 py-1.5 rounded-lg border border-indigo-700 flex items-center space-x-1.5 transition">
+                    <i class="fa-solid fa-book-open text-amber-300"></i>
+                    <span class="hidden sm:inline">Guía</span>
+                </button>
+
+                <button onclick="shareApp()" class="bg-indigo-900/80 hover:bg-indigo-800 text-indigo-100 px-3 py-1.5 rounded-lg border border-indigo-700 flex items-center space-x-1.5 transition">
+                    <i class="fa-solid fa-share-nodes text-purple-300"></i>
+                    <span class="hidden sm:inline">Compartir</span>
+                </button>
+
+                <button onclick="saveToLocalStorage()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg flex items-center space-x-1.5 transition font-medium">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Guardar</span>
+                </button>
+
+                <button onclick="window.print()" class="bg-latam-blue hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg flex items-center space-x-1.5 transition font-medium">
+                    <i class="fa-solid fa-print"></i>
+                    <span class="hidden sm:inline">PDF</span>
+                </button>
+
+                <button onclick="clearForm()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2.5 py-1.5 rounded-lg transition" title="Limpiar Formulario">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="no-print fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-xl shadow-xl border border-slate-700 flex items-center space-x-2 text-sm hidden transition-all duration-300">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toast-msg">Mensaje guardado</span>
+    </div>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto p-3 sm:p-5 print-full">
+        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden print-full">
+
+            <!-- SECCIÓN 1: DEBRIEFING -->
+            <section class="border-b border-slate-200">
+                <div class="bg-latam-navy text-white text-center py-2.5 px-4 font-bold tracking-widest text-base sm:text-lg uppercase">
+                    DEBRIEFING
+                </div>
+                <div class="p-4 bg-slate-50/50 space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+                        <div class="relative">
+                            <select id="event_1" onchange="styleSelect(this)" class="w-full bg-latam-lightBlue text-latam-navy font-semibold text-sm sm:text-base py-2.5 px-4 rounded-md border border-indigo-200 text-center uppercase appearance-none cursor-pointer hover:bg-blue-200 transition">
+                                <option value="EVENTO" selected>EVENTO</option>
+                                <option value="APT">APT</option>
+                                <option value="APV">APV</option>
+                                <option value="MT">MT</option>
+                                <option value="MV">MV</option>
+                                <option value="LOFT">LOFT</option>
+                                <option value="ENTRENAMIENTO">ENTRENAMIENTO</option>
+                            </select>
+                            <i class="fa-solid fa-caret-down absolute right-3 top-3.5 text-latam-navy pointer-events-none text-xs"></i>
+                        </div>
+                        <div class="relative">
+                            <select id="result_1" onchange="styleSelect(this)" class="w-full bg-latam-lightBlue text-latam-navy font-semibold text-sm sm:text-base py-2.5 px-4 rounded-md border border-indigo-200 text-center uppercase appearance-none cursor-pointer hover:bg-blue-200 transition">
+                                <option value="RESULTADO" selected>RESULTADO</option>
+                                <option value="COMPLETO">COMPLETO</option>
+                                <option value="INCOMPLETO">INCOMPLETO</option>
+                            </select>
+                            <i class="fa-solid fa-caret-down absolute right-3 top-3.5 text-latam-navy pointer-events-none text-xs"></i>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+                        <div class="relative">
+                            <select id="event_2" onchange="styleSelect(this)" class="w-full bg-latam-lightBlue text-latam-navy font-semibold text-sm sm:text-base py-2.5 px-4 rounded-md border border-indigo-200 text-center uppercase appearance-none cursor-pointer hover:bg-blue-200 transition">
+                                <option value="EVENTO" selected>EVENTO</option>
+                                <option value="ENTRENAMIENTO">ENTRENAMIENTO</option>
+                                <option value="FL">FL</option>
+                                <option value="SPOT">SPOT</option>
+                            </select>
+                            <i class="fa-solid fa-caret-down absolute right-3 top-3.5 text-latam-navy pointer-events-none text-xs"></i>
+                        </div>
+                        <div class="relative">
+                            <select id="result_2" onchange="styleSelect(this)" class="w-full bg-latam-lightBlue text-latam-navy font-semibold text-sm sm:text-base py-2.5 px-4 rounded-md border border-indigo-200 text-center uppercase appearance-none cursor-pointer hover:bg-blue-200 transition">
+                                <option value="RESULTADO" selected>RESULTADO</option>
+                                <option value="COMPLETO">COMPLETO</option>
+                                <option value="INCOMPLETO">INCOMPLETO</option>
+                                <option value="SATISFACTORIO">SATISFACTORIO</option>
+                                <option value="INSATISFACTORIO">INSATISFACTORIO</option>
+                            </select>
+                            <i class="fa-solid fa-caret-down absolute right-3 top-3.5 text-latam-navy pointer-events-none text-xs"></i>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+                        <div class="relative">
+                            <select id="event_3" onchange="styleSelect(this)" class="w-full bg-latam-lightBlue text-latam-navy font-semibold text-sm sm:text-base py-2.5 px-4 rounded-md border border-indigo-200 text-center uppercase appearance-none cursor-pointer hover:bg-blue-200 transition">
+                                <option value="EVALUACION" selected>EVALUACION</option>
+                                <option value="ENTRENAMIENTO">ENTRENAMIENTO</option>
+                                <option value="EVENTO">EVENTO</option>
+                                <option value="LOE">LOE</option>
+                                <option value="LC">LC</option>
+                            </select>
+                            <i class="fa-solid fa-caret-down absolute right-3 top-3.5 text-latam-navy pointer-events-none text-xs"></i>
+                        </div>
+                        <div class="relative">
+                            <select id="result_3" onchange="styleSelect(this)" class="w-full bg-latam-lightBlue text-latam-navy font-semibold text-sm sm:text-base py-2.5 px-4 rounded-md border border-indigo-200 text-center uppercase appearance-none cursor-pointer hover:bg-blue-200 transition">
+                                <option value="RESULTADO" selected>RESULTADO</option>
+                                <option value="COMPLETO">COMPLETO</option>
+                                <option value="INCOMPLETO">INCOMPLETO</option>
+                                <option value="SATISFACTORIO">SATISFACTORIO</option>
+                                <option value="INSATISFACTORIO">INSATISFACTORIO</option>
+                            </select>
+                            <i class="fa-solid fa-caret-down absolute right-3 top-3.5 text-latam-navy pointer-events-none text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: ANÁLISIS DE DESEMPEÑO -->
+            <section class="border-b border-slate-200">
+                <div class="bg-latam-navy text-white text-center py-2.5 px-4 font-bold tracking-widest text-base sm:text-lg uppercase">
+                    ANÁLISIS DE DESEMPEÑO
+                </div>
+                <div class="p-4 sm:p-6 space-y-4 bg-white">
+                    <div class="space-y-1.5">
+                        <div class="relative">
+                            <select id="q1_select" onchange="syncQuestionNotes(1)" class="w-full bg-latam-lightBlue text-latam-navy font-semibold text-xs sm:text-sm py-2.5 px-4 rounded-md border border-indigo-200 appearance-none cursor-pointer hover:bg-blue-200 transition">
+                                <option value="Preguntas">PREGUNTAS</option>
+                                <option value="¿Cómo analizas tu desempeño? (Respuesta en términos globales)" selected>¿Cómo analizas tu desempeño? (Respuesta en términos globales)</option>
+                                <option value="Dime un aspecto de tu trabajo que hiciste bien (fortaleza)">Dime un aspecto de tu trabajo que hiciste bien (fortaleza)</option>
+                                <option value="Cuéntame un aspecto de tu trabajo que debas mejorar o necesitas continuar trabajando.">Cuéntame un aspecto de tu trabajo que debas mejorar o necesitas continuar trabajando.</option>
+                            </select>
+                            <i class="fa-solid fa-caret-down absolute right-3 top-3 text-latam-navy pointer-events-none text-xs"></i>
+                        </div>
+                        <textarea id="q1_notes" placeholder="Anotaciones / Respuesta sobre el desempeño global..." class="w-full bg-slate-50 border border-slate-300 rounded-md p-3 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white"></textarea>
+                    </div>
+                    <div class="space-y-1.5">
+                        <div class="relative">
+                            <select id="q2_select" onchange="syncQuestionNotes(2)" class="w-full bg-latam-lightBlue text-latam-navy font-semibold text-xs sm:text-sm py-2.5 px-4 rounded-md border border-indigo-200 appearance-none cursor-pointer hover:bg-blue-200 transition">
+                                <option value="Preguntas">PREGUNTAS</option>
+                                <option value="¿Cómo analizas tu desempeño? (Respuesta en términos globales)">¿Cómo analizas tu desempeño? (Respuesta en términos globales)</option>
+                                <option value="Dime un aspecto de tu trabajo que hiciste bien (fortaleza)" selected>Dime un aspecto de tu trabajo que hiciste bien (fortaleza)</option>
+                                <option value="Cuéntame un aspecto de tu trabajo que debas mejorar o necesitas continuar trabajando.">Cuéntame un aspecto de tu trabajo que debas mejorar o necesitas continuar trabajando.</option>
+                            </select>
+                            <i class="fa-solid fa-caret-down absolute right-3 top-3 text-latam-navy pointer-events-none text-xs"></i>
+                        </div>
+                        <textarea id="q2_notes" placeholder="Anotaciones sobre fortalezas observadas..." class="w-full bg-slate-50 border border-slate-300 rounded-md p-3 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white"></textarea>
+                    </div>
+                    <div class="space-y-1.5">
+                        <div class="relative">
+                            <select id="q3_select" onchange="syncQuestionNotes(3)" class="w-full bg-latam-lightBlue text-latam-navy font-semibold text-xs sm:text-sm py-2.5 px-4 rounded-md border border-indigo-200 appearance-none cursor-pointer hover:bg-blue-200 transition">
+                                <option value="Preguntas">PREGUNTAS</option>
+                                <option value="¿Cómo analizas tu desempeño? (Respuesta en términos globales)">¿Cómo analizas tu desempeño? (Respuesta en términos globales)</option>
+                                <option value="Dime un aspecto de tu trabajo que hiciste bien (fortaleza)">Dime un aspecto de tu trabajo que hiciste bien (fortaleza)</option>
+                                <option value="Cuéntame un aspecto de tu trabajo que debas mejorar o necesitas continuar trabajando." selected>Cuéntame un aspecto de tu trabajo que debas mejorar o necesitas continuar trabajando.</option>
+                            </select>
+                            <i class="fa-solid fa-caret-down absolute right-3 top-3 text-latam-navy pointer-events-none text-xs"></i>
+                        </div>
+                        <textarea id="q3_notes" placeholder="Anotaciones sobre áreas de mejora o desarrollo continuo..." class="w-full bg-slate-50 border border-slate-300 rounded-md p-3 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: TDODAR -->
+            <section class="border-b border-slate-200">
+                <div class="bg-latam-navy text-white text-center py-2.5 px-4 font-bold tracking-widest text-base sm:text-lg uppercase">
+                    ANÁLISIS DE CONTINGENCIA (TDODAR)
+                </div>
+                <div class="p-4 sm:p-6 bg-slate-50/50">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white p-3 rounded-lg border border-slate-300 shadow-sm flex flex-col">
+                            <div class="flex items-center space-x-2 mb-2 border-b border-slate-200 pb-1">
+                                <span class="w-6 h-6 rounded bg-latam-navy text-white font-bold flex items-center justify-center text-xs">T</span>
+                                <span class="font-bold text-sm text-latam-navy">TIME (Tiempo)</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mb-3 font-medium leading-tight flex-grow">¿El tiempo gestionado fue adecuado para la criticidad de la falla/evento?</p>
+                            <div class="relative mt-auto">
+                                <select id="tdodar_t" class="w-full bg-slate-100 border border-slate-300 rounded p-2 text-xs font-bold text-center text-slate-800 hover:bg-slate-200 focus:bg-white focus:ring-1 focus:ring-indigo-300 transition appearance-none cursor-pointer">
+                                    <option value="-" selected>Seleccionar...</option><option value="SÍ">SÍ</option><option value="NO">NO</option><option value="N/A">N/A</option>
+                                </select>
+                                <i class="fa-solid fa-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none text-xs"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg border border-slate-300 shadow-sm flex flex-col">
+                            <div class="flex items-center space-x-2 mb-2 border-b border-slate-200 pb-1">
+                                <span class="w-6 h-6 rounded bg-latam-navy text-white font-bold flex items-center justify-center text-xs">D</span>
+                                <span class="font-bold text-sm text-latam-navy">DIAGNOSE (Diagnóstico)</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mb-3 font-medium leading-tight flex-grow">¿Se identificó y diagnosticó el problema correctamente sin sesgos?</p>
+                            <div class="relative mt-auto">
+                                <select id="tdodar_d1" class="w-full bg-slate-100 border border-slate-300 rounded p-2 text-xs font-bold text-center text-slate-800 hover:bg-slate-200 focus:bg-white focus:ring-1 focus:ring-indigo-300 transition appearance-none cursor-pointer">
+                                    <option value="-" selected>Seleccionar...</option><option value="SÍ">SÍ</option><option value="NO">NO</option><option value="N/A">N/A</option>
+                                </select>
+                                <i class="fa-solid fa-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none text-xs"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg border border-slate-300 shadow-sm flex flex-col">
+                            <div class="flex items-center space-x-2 mb-2 border-b border-slate-200 pb-1">
+                                <span class="w-6 h-6 rounded bg-latam-navy text-white font-bold flex items-center justify-center text-xs">O</span>
+                                <span class="font-bold text-sm text-latam-navy">OPTIONS (Opciones)</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mb-3 font-medium leading-tight flex-grow">¿Se consideraron todas las variables operacionales para generar opciones viables?</p>
+                            <div class="relative mt-auto">
+                                <select id="tdodar_o" class="w-full bg-slate-100 border border-slate-300 rounded p-2 text-xs font-bold text-center text-slate-800 hover:bg-slate-200 focus:bg-white focus:ring-1 focus:ring-indigo-300 transition appearance-none cursor-pointer">
+                                    <option value="-" selected>Seleccionar...</option><option value="SÍ">SÍ</option><option value="NO">NO</option><option value="N/A">N/A</option>
+                                </select>
+                                <i class="fa-solid fa-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none text-xs"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg border border-slate-300 shadow-sm flex flex-col">
+                            <div class="flex items-center space-x-2 mb-2 border-b border-slate-200 pb-1">
+                                <span class="w-6 h-6 rounded bg-latam-navy text-white font-bold flex items-center justify-center text-xs">D</span>
+                                <span class="font-bold text-sm text-latam-navy">DECIDE (Decisión)</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mb-3 font-medium leading-tight flex-grow">¿La decisión tomada por la tripulación fue la más segura y conservadora?</p>
+                            <div class="relative mt-auto">
+                                <select id="tdodar_d2" class="w-full bg-slate-100 border border-slate-300 rounded p-2 text-xs font-bold text-center text-slate-800 hover:bg-slate-200 focus:bg-white focus:ring-1 focus:ring-indigo-300 transition appearance-none cursor-pointer">
+                                    <option value="-" selected>Seleccionar...</option><option value="SÍ">SÍ</option><option value="NO">NO</option><option value="N/A">N/A</option>
+                                </select>
+                                <i class="fa-solid fa-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none text-xs"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg border border-slate-300 shadow-sm flex flex-col">
+                            <div class="flex items-center space-x-2 mb-2 border-b border-slate-200 pb-1">
+                                <span class="w-6 h-6 rounded bg-latam-navy text-white font-bold flex items-center justify-center text-xs">A</span>
+                                <span class="font-bold text-sm text-latam-navy">ASSIGN (Asignación)</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mb-3 font-medium leading-tight flex-grow">¿Se asignaron las tareas eficientemente manteniendo el control del avión (PF/PM)?</p>
+                            <div class="relative mt-auto">
+                                <select id="tdodar_a" class="w-full bg-slate-100 border border-slate-300 rounded p-2 text-xs font-bold text-center text-slate-800 hover:bg-slate-200 focus:bg-white focus:ring-1 focus:ring-indigo-300 transition appearance-none cursor-pointer">
+                                    <option value="-" selected>Seleccionar...</option><option value="SÍ">SÍ</option><option value="NO">NO</option><option value="N/A">N/A</option>
+                                </select>
+                                <i class="fa-solid fa-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none text-xs"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg border border-slate-300 shadow-sm flex flex-col">
+                            <div class="flex items-center space-x-2 mb-2 border-b border-slate-200 pb-1">
+                                <span class="w-6 h-6 rounded bg-latam-navy text-white font-bold flex items-center justify-center text-xs">R</span>
+                                <span class="font-bold text-sm text-latam-navy">REVIEW (Revisión)</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mb-3 font-medium leading-tight flex-grow">¿Se revisó constantemente el plan y su efectividad ante los cambios del entorno?</p>
+                            <div class="relative mt-auto">
+                                <select id="tdodar_r" class="w-full bg-slate-100 border border-slate-300 rounded p-2 text-xs font-bold text-center text-slate-800 hover:bg-slate-200 focus:bg-white focus:ring-1 focus:ring-indigo-300 transition appearance-none cursor-pointer">
+                                    <option value="-" selected>Seleccionar...</option><option value="SÍ">SÍ</option><option value="NO">NO</option><option value="N/A">N/A</option>
+                                </select>
+                                <i class="fa-solid fa-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: TEM -->
+            <section class="border-b border-slate-200">
+                <div class="bg-latam-navy text-white text-center py-2.5 px-4 font-bold tracking-widest text-base sm:text-lg uppercase flex items-center justify-between">
+                    <span class="w-8"></span>
+                    <span>ANÁLISIS T.E.M. (PIRÁMIDE DE GESTIÓN)</span>
+                    <span class="no-print text-xs font-normal bg-indigo-900/80 text-cyan-300 px-2.5 py-1 rounded border border-indigo-700" title="Pulsa en las capas de la pirámide para evaluar">
+                        <i class="fa-solid fa-circle-info mr-1"></i>Haz clic en cada capa
+                    </span>
+                </div>
+                <div class="p-4 sm:p-6 bg-slate-50 flex flex-col items-center overflow-x-hidden">
+                    <div class="w-full max-w-4xl relative mb-1 transition-all flex flex-col items-center">
+                        <div class="cursor-pointer group w-full" onclick="toggleTEM('amenaza')">
+                            <div class="bg-[#24d0b5] hover:bg-[#1fb39b] transition-colors text-white font-black text-xl tracking-widest text-center py-3.5 shadow-sm" style="clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);">
+                                AMENAZAS
+                            </div>
+                            <div class="bg-[#d9f5ef] text-[#1a9380] font-bold text-xs sm:text-sm text-center py-1.5 -mt-1 w-[90%] mx-auto shadow-sm" style="clip-path: polygon(0 0, 100% 0, 94% 100%, 6% 100%);">
+                                ↓ GESTIÓN DE LAS AMENAZAS ↓
+                            </div>
+                        </div>
+                        <div id="tem_amenaza_form" class="hidden bg-white p-4 border-2 border-[#24d0b5] rounded-lg mt-2 shadow-md w-[88%] mb-3">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">¿Hubo Presencia?</label>
+                                    <select id="tem_amenaza_pres" class="w-full bg-slate-100 border border-slate-300 rounded p-1.5 text-xs font-bold text-slate-700">
+                                        <option value="-" selected>-</option><option value="SÍ">SÍ</option><option value="NO">NO</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">¿Se Gestionó?</label>
+                                    <select id="tem_amenaza_gest" class="w-full bg-slate-100 border border-slate-300 rounded p-1.5 text-xs font-bold text-slate-700">
+                                        <option value="-" selected>-</option><option value="SÍ">SÍ</option><option value="NO">NO</option><option value="N/A">N/A</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-emerald-600 mb-1 uppercase">FFHH Ayudó</label>
+                                    <select id="tem_amenaza_ayudo" class="w-full bg-emerald-50 border border-emerald-200 rounded p-1.5 text-xs font-bold text-emerald-800">
+                                        <option value="-" selected>Seleccionar...</option><option value="TEM">TEM</option><option value="COM">COM</option><option value="LTC">LTC</option><option value="CSI">CSI</option><option value="PTD">PTD</option><option value="AYT">AYT</option><option value="AEV">AEV</option><option value="MON">MON</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-red-600 mb-1 uppercase">FFHH Faltó</label>
+                                    <select id="tem_amenaza_falto" class="w-full bg-red-50 border border-red-200 rounded p-1.5 text-xs font-bold text-red-800">
+                                        <option value="-" selected>Seleccionar...</option><option value="TEM">TEM</option><option value="COM">COM</option><option value="LTC">LTC</option><option value="CSI">CSI</option><option value="PTD">PTD</option><option value="AYT">AYT</option><option value="AEV">AEV</option><option value="MON">MON</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <textarea id="tem_amenaza_notas" placeholder="Anotaciones sobre las amenazas detectadas y su gestión..." class="w-full bg-slate-50 border border-slate-300 rounded p-2 text-xs text-slate-800"></textarea>
+                        </div>
+                    </div>
+                    <div class="w-full max-w-4xl relative mb-1 transition-all flex flex-col items-center">
+                        <div class="cursor-pointer group w-[88%]" onclick="toggleTEM('error')">
+                            <div class="bg-[#0b1069] hover:bg-[#080c50] transition-colors text-white font-black text-xl tracking-widest text-center py-3.5 shadow-sm" style="clip-path: polygon(0 0, 100% 0, 94% 100%, 6% 100%);">
+                                ERRORES
+                            </div>
+                            <div class="bg-[#dcdff3] text-[#0b1069] font-bold text-xs sm:text-sm text-center py-1.5 -mt-1 w-[88%] mx-auto shadow-sm" style="clip-path: polygon(0 0, 100% 0, 92% 100%, 8% 100%);">
+                                ↓ GESTIÓN DEL ERROR ↓
+                            </div>
+                        </div>
+                        <div id="tem_error_form" class="hidden bg-white p-4 border-2 border-[#0b1069] rounded-lg mt-2 shadow-md w-[77%] mb-3">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">¿Hubo Presencia?</label>
+                                    <select id="tem_error_pres" class="w-full bg-slate-100 border border-slate-300 rounded p-1.5 text-xs font-bold text-slate-700">
+                                        <option value="-" selected>-</option><option value="SÍ">SÍ</option><option value="NO">NO</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">¿Se Gestionó?</label>
+                                    <select id="tem_error_gest" class="w-full bg-slate-100 border border-slate-300 rounded p-1.5 text-xs font-bold text-slate-700">
+                                        <option value="-" selected>-</option><option value="SÍ">SÍ</option><option value="NO">NO</option><option value="N/A">N/A</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-emerald-600 mb-1 uppercase">FFHH Ayudó</label>
+                                    <select id="tem_error_ayudo" class="w-full bg-emerald-50 border border-emerald-200 rounded p-1.5 text-xs font-bold text-emerald-800">
+                                        <option value="-" selected>Seleccionar...</option><option value="TEM">TEM</option><option value="COM">COM</option><option value="LTC">LTC</option><option value="CSI">CSI</option><option value="PTD">PTD</option><option value="AYT">AYT</option><option value="AEV">AEV</option><option value="MON">MON</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-red-600 mb-1 uppercase">FFHH Faltó</label>
+                                    <select id="tem_error_falto" class="w-full bg-red-50 border border-red-200 rounded p-1.5 text-xs font-bold text-red-800">
+                                        <option value="-" selected>Seleccionar...</option><option value="TEM">TEM</option><option value="COM">COM</option><option value="LTC">LTC</option><option value="CSI">CSI</option><option value="PTD">PTD</option><option value="AYT">AYT</option><option value="AEV">AEV</option><option value="MON">MON</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <textarea id="tem_error_notas" placeholder="Anotaciones sobre los errores observados y su corrección..." class="w-full bg-slate-50 border border-slate-300 rounded p-2 text-xs text-slate-800"></textarea>
+                        </div>
+                    </div>
+                    <div class="w-full max-w-4xl relative mb-1 transition-all flex flex-col items-center">
+                        <div class="cursor-pointer group w-[77.5%]" onclick="toggleTEM('end')">
+                            <div class="bg-[#d9193b] hover:bg-[#b91532] transition-colors text-white font-black text-[17px] sm:text-xl tracking-widest text-center py-3.5 shadow-sm" style="clip-path: polygon(0 0, 100% 0, 92% 100%, 8% 100%);">
+                                ESTADO NO DESEADO
+                            </div>
+                            <div class="bg-[#fadddf] text-[#d9193b] font-bold text-xs sm:text-sm text-center py-1.5 -mt-1 w-[84%] mx-auto shadow-sm" style="clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%);">
+                                ↓ MANEJO ESTADO NO DESEADO ↓
+                            </div>
+                        </div>
+                        <div id="tem_end_form" class="hidden bg-white p-4 border-2 border-[#d9193b] rounded-lg mt-2 shadow-md w-[65%] mb-3">
+                            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">¿Hubo Presencia?</label>
+                                    <select id="tem_end_pres" class="w-full bg-slate-100 border border-slate-300 rounded p-1.5 text-xs font-bold text-slate-700">
+                                        <option value="-" selected>-</option><option value="SÍ">SÍ</option><option value="NO">NO</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">¿Se Gestionó?</label>
+                                    <select id="tem_end_gest" class="w-full bg-slate-100 border border-slate-300 rounded p-1.5 text-xs font-bold text-slate-700">
+                                        <option value="-" selected>-</option><option value="SÍ">SÍ</option><option value="NO">NO</option><option value="N/A">N/A</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-emerald-600 mb-1 uppercase">FFHH Ayudó</label>
+                                    <select id="tem_end_ayudo" class="w-full bg-emerald-50 border border-emerald-200 rounded p-1.5 text-xs font-bold text-emerald-800">
+                                        <option value="-" selected>Seleccionar...</option><option value="TEM">TEM</option><option value="COM">COM</option><option value="LTC">LTC</option><option value="CSI">CSI</option><option value="PTD">PTD</option><option value="AYT">AYT</option><option value="AEV">AEV</option><option value="MON">MON</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-red-600 mb-1 uppercase">FFHH Faltó</label>
+                                    <select id="tem_end_falto" class="w-full bg-red-50 border border-red-200 rounded p-1.5 text-xs font-bold text-red-800">
+                                        <option value="-" selected>Seleccionar...</option><option value="TEM">TEM</option><option value="COM">COM</option><option value="LTC">LTC</option><option value="CSI">CSI</option><option value="PTD">PTD</option><option value="AYT">AYT</option><option value="AEV">AEV</option><option value="MON">MON</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <textarea id="tem_end_notas" placeholder="Anotaciones sobre el estado no deseado alcanzado y su resolución..." class="w-full bg-slate-50 border border-slate-300 rounded p-2 text-xs text-slate-800"></textarea>
+                        </div>
+                    </div>
+                    <div class="w-full max-w-4xl relative mt-1 flex flex-col items-center">
+                        <div class="bg-[#dcdde0] text-slate-700 font-black text-lg tracking-widest text-center py-3.5 w-[50%] shadow-sm" style="clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);">
+                            ESTADO FINAL
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 5: MATRIZ -->
+            <section class="border-b border-slate-200">
+                <div class="bg-latam-navy text-white py-2.5 px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold tracking-widest text-base sm:text-lg uppercase">DEBRIEFING — MATRIZ FFHH</span>
+                        <span class="no-print hidden lg:inline-block text-[10px] font-normal bg-indigo-900/80 text-cyan-300 px-2 py-0.5 rounded border border-indigo-700">
+                            <i class="fa-solid fa-circle-info mr-1"></i>Haz clic en FFHH para ver SPOs
+                        </span>
+                    </div>
+                    <div class="flex bg-indigo-900/80 rounded-lg p-1 border border-indigo-700 no-print shadow-inner">
+                        <button id="btn-manual-completo" onclick="setManual('completo')" class="px-3 py-1 text-xs font-bold rounded-md transition-colors bg-white text-latam-navy shadow">ESTÁNDAR COMPLETO</button>
+                        <button id="btn-manual-b767" onclick="setManual('b767')" class="px-3 py-1 text-xs font-bold rounded-md transition-colors text-slate-300 hover:text-white">B767 ECUADOR</button>
+                    </div>
+                </div>
+                <div class="flex flex-col lg:flex-row overflow-x-auto">
+                    <div class="bg-latam-navy text-white flex lg:flex-col items-center justify-between lg:justify-around p-3 min-w-[70px] border-r border-indigo-950 no-print">
+                        <div class="w-8 h-8 rounded-full bg-latam-red flex items-center justify-center font-black text-xs shadow-inner">≡</div>
+                        <div class="flex lg:flex-col gap-3 font-extrabold text-xl sm:text-2xl tracking-wider">
+                            <button onclick="showKCMModal('K')" class="w-10 h-10 rounded-lg bg-indigo-900/80 hover:bg-latam-red text-white flex items-center justify-center border border-indigo-700 transition" title="Conocimiento [K]">K</button>
+                            <button onclick="showKCMModal('C')" class="w-10 h-10 rounded-lg bg-indigo-900/80 hover:bg-latam-red text-white flex items-center justify-center border border-indigo-700 transition" title="Habilidades Cognitivas [C]">C</button>
+                            <button onclick="showKCMModal('M')" class="w-10 h-10 rounded-lg bg-indigo-900/80 hover:bg-latam-red text-white flex items-center justify-center border border-indigo-700 transition" title="Habilidades Motrices [M]">M</button>
+                        </div>
+                        <div class="text-[9px] text-slate-400 font-mono tracking-tighter text-center hidden lg:block">AQP<br>REV 5.0</div>
+                    </div>
+                    <div class="hidden print:flex flex-col items-center justify-center bg-latam-navy text-white font-extrabold px-2 text-lg">
+                        <span>K</span><span class="my-4">C</span><span>M</span>
+                    </div>
+                    <div class="flex-grow overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[750px]">
+                            <thead>
+                                <tr class="bg-latam-navy text-white text-xs uppercase font-bold tracking-wider border-b border-indigo-900">
+                                    <th class="p-2.5 text-center w-24 border-r border-indigo-900">FFHH</th>
+                                    <th class="p-2.5 w-36 border-r border-indigo-900">FASE / MANIOBRA</th>
+                                    <th class="p-2.5 w-1/4 border-r border-indigo-900">QUE OCURRIÓ</th>
+                                    <th class="p-2.5 w-1/4 border-r border-indigo-900">POR QUE?</th>
+                                    <th class="p-2.5 text-center w-28 border-r border-indigo-900">FFHH TEM/CRM</th>
+                                    <th class="p-2.5 w-1/4">QUE APRENDÍ QUE ME LLEVO A LA LÍNEA</th>
+                                </tr>
+                            </thead>
+                            <tbody id="matrix-tbody" class="divide-y divide-slate-200 text-xs sm:text-sm bg-white">
+                                <!-- JS Table -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 6: PREGUNTAS SOPORTE -->
+            <section class="border-b border-slate-200">
+                <div class="bg-latam-navy text-white text-center py-2.5 px-4 font-bold tracking-widest text-base sm:text-lg uppercase flex items-center justify-between">
+                    <span class="w-20"></span>
+                    <span>PREGUNTAS DE SOPORTE</span>
+                    <button onclick="addSupportBlock()" class="no-print bg-indigo-900/80 hover:bg-indigo-800 text-cyan-300 text-xs px-2.5 py-1 rounded border border-indigo-700 transition flex items-center space-x-1">
+                        <i class="fa-solid fa-plus"></i><span>Agregar Bloque</span>
+                    </button>
+                </div>
+                <div id="support-blocks-container" class="p-4 sm:p-6 space-y-6 bg-slate-50/50">
+                    <!-- JS Blocks -->
+                </div>
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="p-4 bg-slate-100 border-t border-slate-200 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-3">
+                <div class="flex items-center space-x-2">
+                    <span class="font-bold text-latam-navy">GRUPO LATAM AIRLINES</span>
+                    <span>—</span>
+                    <span>MANUAL QS-FASE 10 REV. NOV 2026</span>
+                </div>
+                <div>Documento de facilitación y autoevaluación AQP (Andragogía)</div>
+            </footer>
+        </div>
+    </main>
+
+    <!-- MODAL 1: RESUMEN FFHH (SPOs INTERACTIVOS) -->
+    <div id="ffhh-modal" class="no-print fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] h-[80vh] overflow-hidden flex flex-col">
+            <div class="bg-latam-navy text-white p-4 flex items-center justify-between shadow-md z-10">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-list-check text-cyan-400 text-lg"></i>
+                    <h3 class="font-bold text-base">Conductas Observables por Factor Humano</h3>
+                </div>
+                <button onclick="closeFFHHModal()" class="text-slate-300 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+           
+            <div class="flex flex-col md:flex-row flex-grow overflow-hidden bg-slate-50">
+                <div class="w-full md:w-1/3 lg:w-1/4 bg-white border-b md:border-b-0 md:border-r border-slate-200 overflow-y-auto p-4 flex flex-col gap-2 shadow-inner" id="ffhh-modal-buttons"></div>
+                <div class="w-full md:w-2/3 lg:w-3/4 p-4 sm:p-6 overflow-y-auto" id="ffhh-modal-content">
+                    <div class="h-full flex flex-col items-center justify-center text-slate-400 space-y-3 min-h-[300px]">
+                        <i class="fa-solid fa-hand-pointer text-4xl"></i>
+                        <p class="text-sm font-medium">Selecciona un Factor Humano a la izquierda</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-4 border-t border-slate-200 text-right z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                <button onclick="closeFFHHModal()" class="bg-latam-navy text-white px-5 py-2 rounded-lg text-xs font-semibold hover:bg-latam-hoverNavy transition">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: GUÍA & TOLERANCIAS -->
+    <div id="guide-modal" class="no-print fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="bg-latam-navy text-white p-4 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-book-open text-amber-300 text-lg"></i>
+                    <h3 class="font-bold text-base">Guía de Facilitación (Andragogía) & Tolerancias QS10</h3>
+                </div>
+                <button onclick="closeGuideModal()" class="text-slate-300 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-6 text-xs sm:text-sm text-slate-700">
+                <div>
+                    <h4 class="font-bold text-latam-navy text-sm uppercase mb-2 border-b border-indigo-100 pb-1 flex items-center"><i class="fa-solid fa-user-graduate mr-2 text-indigo-600"></i>Principios de Facilitación Andragógica</h4>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                        <li class="bg-slate-50 p-2.5 rounded border border-slate-200 flex items-start space-x-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Incentiva la autocrítica y la autoevaluación para el aprendizaje del piloto.</span></li>
+                        <li class="bg-slate-50 p-2.5 rounded border border-slate-200 flex items-start space-x-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Favorece el autoanálisis con el propósito de que se reconozcan aciertos y errores.</span></li>
+                        <li class="bg-slate-50 p-2.5 rounded border border-slate-200 flex items-start space-x-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Demuestra capacidad de guiar el camino del propio aprendizaje de los pilotos.</span></li>
+                        <li class="bg-slate-50 p-2.5 rounded border border-slate-200 flex items-start space-x-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Empodera a los alumnos para que el proceso de aprendizaje se dé en forma activa.</span></li>
+                        <li class="bg-slate-50 p-2.5 rounded border border-slate-200 flex items-start space-x-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Fomenta que los procesos (briefing – SIM - debriefing) sean centrados en el alumno.</span></li>
+                        <li class="bg-slate-50 p-2.5 rounded border border-slate-200 flex items-start space-x-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Promueve el concepto de andragogía (aprendizaje adulto).</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-latam-navy text-sm uppercase mb-2 border-b border-indigo-100 pb-1 flex items-center"><i class="fa-solid fa-gauge-high mr-2 text-latam-blue"></i>Tolerancias de Maniobras</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-50 rounded-lg p-3 border border-slate-200">
+                            <h5 class="font-bold text-xs text-indigo-950 uppercase mb-2">Condición Normal de Vuelo</h5>
+                            <table class="w-full text-xs">
+                                <tr class="border-b"><td class="py-1">Mantención de altitud:</td><td class="font-bold text-right">+100 / -100 Pies</td></tr>
+                                <tr class="border-b"><td class="py-1">MDA, DA / DH:</td><td class="font-bold text-right">+50 / -0 Pies</td></tr>
+                                <tr class="border-b"><td class="py-1">Cursos o radiales:</td><td class="font-bold text-right">+5 / -5 Grados</td></tr>
+                                <tr class="border-b"><td class="py-1">Aproximación precisa:</td><td class="font-bold text-right">+1 / -1 Dot LOC/GS</td></tr>
+                                <tr class="border-b"><td class="py-1">Rumbos:</td><td class="font-bold text-right">+5 / -5 Grados</td></tr>
+                                <tr><td class="py-1">Velocidad:</td><td class="font-bold text-right">+10 / -10 Nudos</td></tr>
+                            </table>
+                        </div>
+                        <div class="bg-amber-50/60 rounded-lg p-3 border border-amber-200">
+                            <h5 class="font-bold text-xs text-amber-900 uppercase mb-2">Condición Degradada (Falla Motor / Sistemas)</h5>
+                            <table class="w-full text-xs">
+                                <tr class="border-b border-amber-200"><td class="py-1">Mantención de altitud:</td><td class="font-bold text-right">+200 / -200 Pies</td></tr>
+                                <tr class="border-b border-amber-200"><td class="py-1">MDA, DA / DH:</td><td class="font-bold text-right">+100 / -0 Pies</td></tr>
+                                <tr class="border-b border-amber-200"><td class="py-1">Cursos o radiales:</td><td class="font-bold text-right">+5 / -5 Grados</td></tr>
+                                <tr class="border-b border-amber-200"><td class="py-1">Aproximación precisa:</td><td class="font-bold text-right">+1 / -1 Dot LOC/GS</td></tr>
+                                <tr class="border-b border-amber-200"><td class="py-1">Rumbos:</td><td class="font-bold text-right">+10 / -10 Grados</td></tr>
+                                <tr><td class="py-1">Velocidad:</td><td class="font-bold text-right">+15 / -15 Nudos</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-latam-navy text-sm uppercase mb-2 border-b border-indigo-100 pb-1 flex items-center"><i class="fa-solid fa-list-check mr-2 text-emerald-600"></i>Escala de Evaluación (0 a 4)</h4>
+                    <div class="space-y-1.5 text-xs">
+                        <div class="bg-slate-100 p-2 rounded flex justify-between"><strong>0 (OMITIDO):</strong> <span>Evaluación omitida o no observada.</span></div>
+                        <div class="bg-red-50 p-2 rounded text-red-900 flex justify-between"><strong>1 (BAJO ESTÁNDAR):</strong> <span>Desviaciones significativas. Compromete seguridad.</span></div>
+                        <div class="bg-blue-50 p-2 rounded text-blue-900 flex justify-between"><strong>2 (ESTÁNDAR CON DEBRIEF):</strong> <span>Desviaciones menores reconocidas y corregidas.</span></div>
+                        <div class="bg-emerald-50 p-2 rounded text-emerald-900 flex justify-between"><strong>3 (ESTÁNDAR):</strong> <span>Nivel de competencia adecuado y sólido.</span></div>
+                        <div class="bg-emerald-100 p-2 rounded text-emerald-950 flex justify-between"><strong>4 (SOBRE ESTÁNDAR):</strong> <span>Ejecución ejemplar de todos los desempeños esperados.</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-50 p-4 border-t border-slate-200 text-right">
+                <button onclick="closeGuideModal()" class="bg-latam-navy text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-latam-hoverNavy transition">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: K-C-M -->
+    <div id="kcm-modal" class="no-print fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col">
+            <div class="bg-latam-navy text-white p-4 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span id="kcm-modal-badge" class="w-7 h-7 rounded bg-latam-red text-white font-bold flex items-center justify-center text-sm">K</span>
+                    <h3 id="kcm-modal-title" class="font-bold text-base">CONOCIMIENTO [K]</h3>
+                </div>
+                <button onclick="closeKCMModal()" class="text-slate-300 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="kcm-modal-body" class="p-6 text-sm text-slate-700 leading-relaxed space-y-3"></div>
+            <div class="bg-slate-50 p-4 border-t border-slate-200 text-right">
+                <button onclick="closeKCMModal()" class="bg-latam-navy text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-latam-hoverNavy transition">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentManual = 'completo';
+
+        const ffhhDatabaseCompleto = {
+            'TEM': { code: 'TEM', title: 'TPO 10.1 – ADMINISTRACIÓN DE AMENAZAS, ERRORES Y ESTADOS NO DESEADOS', spos: [
+                { code: 'SPO 10.1.1', title: 'Detectar y manejar amenazas', items: ['Identifica oportunamente amenazas internas y externas, esperadas e inesperadas.', 'Evalúa y comunica el nivel de riesgo asociado a las amenazas detectadas.', 'Implementa oportunamente contramedidas preventivas usando recursos disponibles.', 'Reevalúa continuamente las amenazas y ajusta estrategias cuando cambian las condiciones.'] },
+                { code: 'SPO 10.1.2', title: 'Detectar y administrar el error', items: ['Detecta oportunamente errores propios o de otros miembros de la tripulación.', 'Comunica y evalúa el impacto operacional de los errores detectados.', 'Implementa acciones correctivas y contramedidas antes de un estado no deseado.', 'Analiza los errores para fortalecer el aprendizaje operacional y prevenir recurrencia.'] },
+                { code: 'SPO 10.1.3', title: 'Detectar y manejar estados no deseados', items: ['Reconoce oportunamente un estado no deseado y evalúa el riesgo asociado.', 'Prioriza e implementa acciones de recuperación para restablecer condición segura.', 'Coordina con la tripulación las acciones de recuperación utilizando recursos.', 'Recupera la operación manteniendo seguridad operacional sin escalar a incidente.'] }
+            ]},
+            'COM': { code: 'COM', title: 'TPO 10.2 – PROCESO DE COMUNICACIÓN', spos: [
+                { code: 'SPO 10.2.1', title: 'Efectuar el briefing', items: ['Realiza un briefing estructurado, claro y adaptado a la fase de la operación.', 'Comunica información relevante, identificando amenazas y contramedidas.', 'Utiliza guía de briefing, fraseología y estándares establecidos.'] },
+                { code: 'SPO 10.2.2', title: 'Transmitir y recibir información operacional', items: ['Transmite/recibe información clara, precisa, oportuna y estructurada.', 'Escucha activamente, solicita aclaraciones y verifica comprensión crítica.', 'Comunica oportunamente decisiones, cambios y desviaciones para conciencia común.', 'Informa a pasajeros con mensajes claros y oportunos durante contingencias.'] },
+                { code: 'SPO 10.2.3', title: 'Utilizar comunicación asertiva y ambiente abierto', items: ['Se comunica de manera directa, respetuosa, precisa y oportuna.', 'Expresa discrepancias o riesgos asertivamente favoreciendo ambiente abierto.', 'Entrega y recibe retroalimentación de manera constructiva.', 'Escoge momento oportuno para comunicar información crítica.'] },
+                { code: 'SPO 10.2.4', title: 'Aplicar comunicaciones aeronáuticas estandarizadas', items: ['Aplica correctamente fraseología OACI y procedimientos de compañía.', 'Prioriza comunicaciones críticas y gestiona comunicaciones simultáneas.', 'Solicita aclaraciones ante incertidumbre en información crítica.', 'Mantiene comunicaciones claras, breves y precisas con ATC.'] }
+            ]},
+            'LTC': { code: 'LTC', title: 'TPO 10.3 – ADMINISTRACIÓN DEL EQUIPO DE TRABAJO', spos: [
+                { code: 'SPO 10.3.1', title: 'Ejercer liderazgo en el cargo', items: ['Define y comunica claramente objetivos, tareas y responsabilidades.', 'Establece, comunica y ajusta cursos de acción según condiciones.', 'Gestiona eficientemente recursos humanos, técnicos y operacionales.', 'Demuestra liderazgo, iniciativa y asertividad operacional.', 'Toma decisiones oportunas considerando la situación.'] },
+                { code: 'SPO 10.3.2', title: 'Promover el trabajo en equipo', items: ['Promueve ambiente de colaboración, participation y respeto mutuo.', 'Busca, comparte y considera información para tomar decisiones.', 'Solicita y entrega apoyo cuando la situación lo requiere.', 'Reconoce fortalezas y limitaciones para optimizar desempeño.'] },
+                { code: 'SPO 10.3.3', title: 'Administrar la carga de trabajo', items: ['Prioriza y distribuye tareas considerando situación y capacidades.', 'Administra el tiempo y mantiene control durante alta carga de trabajo.', 'Aplica estrategias al superar capacidad (redistribución / apoyo).', 'Gestiona interrupciones, distracciones y Startle Effect.', 'Reduce carga de trabajo usando automatización y apoyo disponible.'] }
+            ]},
+            'CSI': { code: 'CSI', title: 'TPO 10.4 – CONCIENCIA SITUACIONAL', spos: [
+                { code: 'SPO 10.4.1', title: 'Percibir correctamente entorno y condiciones', items: ['Identifica elementos relevantes del entorno, operación y tripulación (fatiga, estrés).', 'Detecta cambios, amenazas o distractores que degraden conciencia situacional.', 'Mantiene exploración activa y sistemática (scan) evitando fijación.', 'Ejecuta procedimientos y listas para mantener conciencia situacional.'] },
+                { code: 'SPO 10.4.2', title: 'Comprender lo que ha sido percibido', items: ['Integra e interpreta información de distintas fuentes con el estado actual.', 'Evalúa impacto operacional de cambios y prioriza estímulos.', 'Comparte y valida comprensión de situación con tripulación.', 'Reconoce saturación cognitiva y ajusta desempeño.'] },
+                { code: 'SPO 10.4.3', title: 'Prever las consecuencias', items: ['Anticipa evolución de situación operacional y posibles escenarios.', 'Establece estrategias preventivas según nivel de riesgo.', 'Prepara a la tripulación para períodos de alta carga de trabajo.', 'Recupera conciencia situacional ante cambios inesperados.'] }
+            ]},
+            'PTD': { code: 'PTD', title: 'TPO 10.5 – PLANIFICACIÓN Y TOMA DE DECISIONES (MODELO TDODAR)', spos: [
+                { code: 'SPO 10.5.1', title: 'Obtener y analizar información (Time + Diagnose)', items: ['Recopila documentación necesaria para planificación y vuelo.', 'Analiza meteorología, NOTAM, peso y balance, MEL y restricciones.', 'Evalúa viabilidad del vuelo identificando riesgos.', 'Considera tiempo disponible (T) para diagnosticar (D) oportunamente.', 'Comparte información con tripulación favoreciendo comprensión.'] },
+                { code: 'SPO 10.5.2', title: 'Establecer prioridades y prever resultados (Options)', items: ['Planifica operación considerando limitaciones y recursos.', 'Establece prioridades operacionales según situación.', 'Identifica opciones (O) de acción y anticipa consecuencias.', 'Prevé cambios de escenario y establece planes alternativos.'] },
+                { code: 'SPO 10.5.3', title: 'Establecer cursos de acción (Decide + Assign + Review)', items: ['Selecciona e implementa la decisión (D) más segura.', 'Comunica la decisión y asigna (A) responsabilidades claramente.', 'Monitorea implementación y revisa (R) ajustando si cambia entorno.', 'Evalúa efectividad e incorpora aprendizajes futuros.'] }
+            ]},
+            'AYT': { code: 'AYT', title: 'TPO 10.6 – GESTIÓN DE LA AUTOMATIZACIÓN Y TECNOLOGÍA', spos: [
+                { code: 'SPO 10.6.1', title: 'Planificar y coordinar automatización', items: ['Planifica estrategia según fase de vuelo y estado de aeronave.', 'Define y coordina distribución de tareas PF/PM.', 'Selecciona automatización considerando carga de trabajo y experiencia.', 'Comunica cambios en la estrategia de automatización.'] },
+                { code: 'SPO 10.6.2', title: 'Gestionar e interactuar con automatización', items: ['Selecciona nivel apropiado de automatización según situación.', 'Verifica y confirma modos automáticos (Mode Awareness).', 'Reconoce protecciones, reversiones y discrepancias.'] },
+                { code: 'SPO 10.6.3', title: 'Monitorear automatización y evitar complacencia', items: ['Monitorea continuamente comportamiento de automatización.', 'Detecta pérdida de conciencia de modo o Automation Surprise.', 'Evita complacencia y sesgos de automatización (Automation Bias).', 'Interviene oportunamente si la automatización no contribuye a la seguridad.'] },
+                { code: 'SPO 10.6.4', title: 'Controlar manualmente la aeronave cuando corresponda', items: ['Asume control manual oportunamente cuando la situación lo requiere.', 'Mantiene vuelo manual dentro de parámetros seguros.', 'Mantiene conciencia situacional en transición manual/autómata.', 'Reincorpora automatización cuando sea la opción más segura.'] }
+            ]},
+            'AEV': { code: 'AEV', title: 'TPO 10.7 – AUTOEVALUACIÓN Y DESARROLLO PROFESIONAL', spos: [
+                { code: 'SPO 10.7.1', title: 'Participar activamente en debriefing', items: ['Participa con actitud abierta, reflexiva y receptiva.', 'Analiza objetivamente su desempeño usando estándares AQP y FFHH.', 'Identifica fortalezas, errores y oportunidades de mejora.'] },
+                { code: 'SPO 10.7.2', title: 'Demostrar autoevaluación y autorregulación', items: ['Metacognición: Reflexiona sobre cómo decisiones influyen en desempeño.', 'Responsabilidad: Asume impacto de sus acciones en seguridad.', 'Autorregulación emocional: Mantiene estabilidad sin actitud defensiva.', 'Aprendizaje continuo: Establece acciones concretas de mejora.'] }
+            ]},
+            'MON': { code: 'MON', title: 'TPO 10.8 – PROCESO DE MONITOREO', spos: [
+                { code: 'SPO 10.8.1', title: 'Monitorear condiciones de la aeronave', items: ['Monitorea parámetros, configuraciones y sistemas continuamente.', 'Detecta y comunica desviaciones respecto a SOP y parámetros.', 'Realiza callouts oportunos y completos según SOP.'] },
+                { code: 'SPO 10.8.2', title: 'Monitorear condiciones del entorno', items: ['Monitorea entorno operacional e identifica amenazas.', 'Compara evolución del vuelo con el plan previsto.', 'Comunica desviaciones o necesidades de información.', 'Mantiene monitoreo activo durante alta carga de trabajo.'] },
+                { code: 'SPO 10.8.3', title: 'Monitorear condiciones propias y de la tripulación', items: ['Monitorea desempeño propio y del otro piloto.', 'Detecta pérdida de conciencia situacional o saturación.', 'Comunica dudas y verifica comprensión de información crítica.', 'Promueve y acepta monitoreo cruzado (cross-monitoring).'] }
+            ]}
+        };
+
+        const ffhhDatabaseB767 = {
+            'TEM': { code: 'TEM', title: 'TPO 10.1 – ADMINISTRACIÓN DE LA AMENAZA Y EL ERROR (TEM)', spos: [
+                { code: 'SPO 10.1.1', title: 'Detectar y manejar la amenaza', items: ['Aplica en forma oportuna las contramedidas de acuerdo con la amenaza.', 'Reconoce la(s) amenaza(s) externa(s) e interna(s).', 'Reconoce el(los) error(es) externo(s) y amenaza(s) latente(s).', 'Reconoce amenaza(s) esperada(s) e inesperada(s).'] },
+                { code: 'SPO 10.1.2', title: 'Detectar y administrar el error', items: ['Aplica la(s) contramedida(s) adecuada(s) y oportuna(s) para corregir el/los error(es).', 'Reconoce el/los error(es) de procedimientos, comunicación, operación y decisión.'] },
+                { code: 'SPO 10.1.3', title: 'Detectar y manejar el estado no deseado', items: ['Aplica la contramedida adecuada en forma inmediata.', 'Reconoce y define un estado no deseado.'] }
+            ]},
+            'COM': { code: 'COM', title: 'TPO 10.2 – PROCESO DE COMUNICACIÓN (COM)', spos: [
+                { code: 'SPO 10.2.1', title: 'Efectuar el briefing', items: ['Logra la atención antes de iniciar y efectúa un briefing interactivo y completo.', 'Estimula un ambiente abierto a la participación y usa la guía de briefing.', 'Comunica meteorología, avión, NOTAMS y analiza amenazas.', 'Incentiva al PM para que verbalice los errores u omisiones del PF (monitor-me).'] },
+                { code: 'SPO 10.2.2', title: 'Transmitir y/o recibir el contenido de la información', items: ['Transmite el mensaje en forma clara y ordenada (Standard Callouts).', 'Domina el idioma y utiliza fraseología aeronáutica.', 'Demuestra habilidades de comunicación considerando diferentes opiniones.'] },
+                { code: 'SPO 10.2.3', title: 'Transmitir adecuadamente las decisiones', items: ['Comunica las condiciones consideradas, decisiones e intenciones a seguir.', 'Entrega planes de acción en caso de desviación o desvíos voluntarios de los SOPs.'] },
+                { code: 'SPO 10.2.4', title: 'Motivar la comunicación entre la tripulación', items: ['Solicita opiniones, sugerencias, información faltante y retroalimentación.', 'Verifica que los mensajes hayan sido recibidos correctamente.', 'Manifiesta las dudas que se le presentan.'] },
+                { code: 'SPO 10.2.5', title: 'Utilizar la comunicación asertiva', items: ['Expresa directa y honestamente el mensaje, utilizando un lenguaje cortés y corporal consecuente.', 'Manifiesta las discrepancias directa y francamente manteniendo contacto visual.', 'Insiste en un mensaje del cual no hay respuesta o acción positiva.'] },
+                { code: 'SPO 10.2.6', title: 'Mantener a los pasajeros informados', items: ['Entrega información (bienvenida, retrasos, contingencias) de forma veraz y oportuna (CP).', 'Utiliza lenguaje cortes, empático y en el momento adecuado (CP).'] },
+                { code: 'SPO 10.2.7', title: 'Dominio de comunicaciones aeronáuticas', items: ['Comprende instrucciones, utiliza fraseología ICAO y transmite Readbacks completos.', 'Aclara dudas con el ATC y se da a entender adecuadamente.'] }
+            ]},
+            'LTC': { code: 'LTC', title: 'TPO 10.3 – ADMINISTRACIÓN DEL EQUIPO DE TRABAJO (LTC)', spos: [
+                { code: 'SPO 10.3.1', title: 'Ejercer liderazgo en el puesto que desempeña', items: ['Define objetivos, tareas, cursos de acción y los re-define si es necesario.', 'Usa todos los recursos disponibles y tiene actitud proactiva.', 'Conoce las funciones, estimula la participación y actúa asertivamente.', 'Establece una estrategia para lograr una aproximación estabilizada.'] },
+                { code: 'SPO 10.3.2', title: 'Promover el trabajo en equipo', items: ['Participa, busca información y sugiere cursos de acción.', 'Ofrece participación, estimula a otros y considera recomendaciones.', 'Reconoce logros, debilidades y demuestra empatía con el otro.'] },
+                { code: 'SPO 10.3.3', title: 'Administrar la carga de trabajo', items: ['Prioriza, asigna, y controla el cumplimiento de tareas de forma ordenada.', 'Manifiesta el exceso de carga y toma/mantiene el control de la situación.', 'Administra el tiempo y no interrumpe la ejecución de las listas de chequeo.'] }
+            ]},
+            'CSI': { code: 'CSI', title: 'TPO 10.4 – DESARROLLO Y MANTENCIÓN DE LA CONCIENCIA SITUACIONAL (CSI)', spos: [
+                { code: 'SPO 10.4.1', title: 'Percibir correctamente las situaciones y condiciones del entorno', items: ['Identifica condición, capacidades del avión, meteorología y anticipa consecuencias.', 'Solicita/ejecuta/retoma adecuadamente las listas de chequeo.', 'Identifica ruidos distractores, NOTOC, MEL, MEDIF y vulnerabilidades (cansancio/estrés).'] },
+                { code: 'SPO 10.4.2', title: 'Comprender lo que ha percibido', items: ['Interpreta información meteorológica, configuración del avión y performance.', 'Interpreta información de NOTOC, NOTAMS, MEL, MEDIF e instrucciones ATC.', 'Evalúa información de otros tripulantes y actúa en consecuencia.'] },
+                { code: 'SPO 10.4.3', title: 'Prever las consecuencias', items: ['Considera efectos meteorológicos, de tránsito y de fallas MEL.', 'Anticipa resultados de sus decisiones y establece estrategia de aproximación estabilizada.'] }
+            ]},
+            'PTD': { code: 'PTD', title: 'TPO 10.5 – PLANIFICACIÓN Y TOMA DE DECISIONES (PTD)', spos: [
+                { code: 'SPO 10.5.1', title: 'Obtener y analizar la información', items: ['Recopila información oportunamente usando fuentes oficiales.', 'Considera cambios, examina perspectivas y comparte información.', 'Utiliza la herramienta TDODAR.'] },
+                { code: 'SPO 10.5.2', title: 'Establecer prioridades y prever resultados', items: ['Considera tiempo, limitaciones (SOPs) y prevé consecuencias de acciones.', 'Prioriza información, establece orden de tareas y estrategias antidsitracción.'] },
+                { code: 'SPO 10.5.3', title: 'Establecer cursos de acción', items: ['Establece objetivos, procedimientos, aeropuertos alternos y límites de acción.', 'Solicita equipos, mantiene línea de análisis y rectifica si es necesario.'] }
+            ]},
+            'AYT': { code: 'AYT', title: 'TPO 10.6 – ADMINISTRACIÓN DE LA AUTOMATIZACIÓN Y LA TECNOLOGÍA (AYT)', spos: [
+                { code: 'SPO 10.6.1', title: 'Planificar y hacer briefing sobre automatización', items: ['Planifica el uso del sistema, la programación FMC y coordina con la tripulación.', 'Considera las demandas y el estatus del avión para los modos de operación.'] },
+                { code: 'SPO 10.6.2', title: 'Respetar y monitorear la distribución de las tareas PF/PM', items: ['Sigue Task Sharing, SOPs, y efectúa cross-check permanente.', 'Comunica los cambios en las intenciones o en los modos automáticos.'] },
+                { code: 'SPO 10.6.3', title: 'Usar el nivel apropiado de automatización', items: ['Usa automatización adecuada a la carga de trabajo, seguridad y tiempo disponible.', 'Usa AP, FD y A/T si se encuentran disponibles y en un modo adecuado.'] },
+                { code: 'SPO 10.6.4', title: 'Interactuar correctamente con los sistemas automáticos', items: ['Selecciona, administra y verbaliza (FCOM) los cambios de modos.', 'Solicita adecuadamente los modos en vuelo manual y reconoce protecciones/reversiones.'] },
+                { code: 'SPO 10.6.5', title: 'Mantenerse alerta y evitar la complacencia', items: ['Administra sistemas para evitar sobrecarga y usa SOPs para evitar pérdida de conciencia.', 'Monitorea la navegación e interviene/corrige si el sistema no responde a las expectativas.'] },
+                { code: 'SPO 10.6.6', title: 'Controla la aeronave manualmente', items: ['Desconecta automatismo y asume vuelo manual suave y preciso cuando se exige.', 'Mantiene márgenes seguros de vuelo manual mientras realiza otras tareas.'] }
+            ]},
+            'AEV': { code: 'AEV', title: 'TPO 10.7 – PROCESO DE AUTOEVALUACIÓN (AEV)', spos: [
+                { code: 'SPO 10.7.1', title: 'Participar en el de-briefing', items: ['Efectúa autoevaluación, participando activamente como instancia de aprendizaje.', 'Reconoce factores CRM presentes, acepta observaciones y las relaciona a las maniobras.'] },
+                { code: 'SPO 10.7.2', title: 'Demostrar capacidad de auto-evaluación y/o autocrítica', items: ['Reconoce capacidades, limitaciones, errores (y sus causas) proponiendo medidas.', 'Efectúa auto-críticas constructivas considerando la crítica como mejora.'] }
+            ]},
+            'MON': { code: 'MON', title: 'TPO 10.8 – PROCESO DE MONITOREO (MON)', spos: [
+                { code: 'SPO 10.8.1', title: 'Observación y aviso de las condiciones del avión', items: ['Verbaliza callouts estándar, desviaciones y errores en configuración/sistemas.', 'Verifica indicaciones e información recibida antes de hacer el callout.'] },
+                { code: 'SPO 10.8.2', title: 'Observación y aviso de las condiciones del entorno', items: ['Solicita información, verbaliza riesgos, anticipa desviaciones y administra interrupciones.', 'Avisa sobre tráficos, meteorología o terrenos que puedan ser factor.'] },
+                { code: 'SPO 10.8.3', title: 'Observación y aviso de las condiciones de la tripulación', items: ['Verbaliza desvíos de planificación/decisiones y exceso de carga de trabajo.', 'Verbaliza y manifiesta el cansancio/fatiga propio o del otro piloto.', 'Confirma mensajes, manifiesta dudas y expresa disposición a ser monitoreado.'] }
+            ]}
+        };
+
+        const kcmDefinitions = {
+            'K': { title: 'CONOCIMIENTO [K]', text: 'Información específica que se requiere para permitirle al alumno desarrollar las competencias. Involucra aptitudes para recordar hechos en forma efectiva, identificar conceptos, aplicar reglas o procedimientos.<br><br>Dado que el conocimiento está oculto, a los alumnos se les debe asignar actividades abiertas para demostrar su base de conocimiento.' },
+            'C': { title: 'HABILIDADES COGNITIVAS [C]', text: 'Proceso mental mediante el cual se aplica el conocimiento adquirido a través de la razón o la percepción sensorial. Se realizan análisis de las situaciones.<br><br>Las tres categorías primarias de habilidad cognitiva son: discriminación, aprendizaje de concepto y empleo de normas.' },
+            'M': { title: 'HABILIDADES MOTRICES [M]', text: 'Se refiere a la capacidad para realizar aquellas maniobras, procedimientos y conductas que tienen un componente psicomotor.<br><br>Se establece que un alumno ha adquirido una habilidad motriz cuando puede realizar un procedimiento con movimientos suaves, regulares, sincronizados y precisos. Es la interfaz directa entre el piloto y la aeronave.' }
+        };
+
+        const supportQuestionsList = [
+            '¿Habrías hecho algo distinto?',
+            '¿Cómo crees que hiciste la maniobra?',
+            '¿Qué puedes decir del PM? ¿Qué te faltó de él (ella)? ¿Qué estuvo de más?',
+            '¿Qué otros FFHH estuvieron presentes en la ejecución de la maniobra?',
+            '¿Qué FFHH crees que ayudó a la ejecución de la maniobra?',
+            '¿Qué FFHH crees que perjudicó o dificultó la ejecución de la maniobra?'
+        ];
+
+        let supportBlockCount = 0;
+        let deferredPrompt;
+
+        window.onload = function() {
+            const pref = localStorage.getItem('latam_manual_pref');
+            if (pref && (pref === 'completo' || pref === 'b767')) { currentManual = pref; }
+            updateManualUI(currentManual);
+            addSupportBlock();
+            addSupportBlock();
+            loadFromLocalStorage();
+            initPWA();
+        };
+
+        function setManual(type) {
+            if (currentManual === type) return;
+            saveToLocalStorage();
+            currentManual = type;
+            updateManualUI(type);
+            loadFromLocalStorage();
+            localStorage.setItem('latam_manual_pref', type);
+            showToast("Base de datos cambiada a: " + (type === 'completo' ? 'Estándar Completo' : 'B767 Ecuador'), "info");
+        }
+
+        function updateManualUI(type) {
+            const btnC = document.getElementById('btn-manual-completo');
+            const btnB = document.getElementById('btn-manual-b767');
+            if (type === 'completo') {
+                btnC.className = "px-3 py-1 text-xs font-bold rounded-md transition-colors bg-white text-latam-navy shadow";
+                btnB.className = "px-3 py-1 text-xs font-bold rounded-md transition-colors text-slate-300 hover:text-white";
+            } else {
+                btnB.className = "px-3 py-1 text-xs font-bold rounded-md transition-colors bg-white text-latam-navy shadow";
+                btnC.className = "px-3 py-1 text-xs font-bold rounded-md transition-colors text-slate-300 hover:text-white";
+            }
+            renderMatrixTable();
+        }
+
+        function initPWA() {
+            window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    const CACHE_NAME = 'aqp-cache-v4';
+                    const urlsToCache = [ 'https://cdn.tailwindcss.com', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap' ];
+                    self.addEventListener('install', event => { event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))); });
+                    self.addEventListener('fetch', event => { event.respondWith(caches.match(event.request).then(response => { return response || fetch(event.request).then(fetchRes => { return caches.open(CACHE_NAME).then(cache => { if (event.request.url.startsWith('http')) { cache.put(event.request, fetchRes.clone()); } return fetchRes; }); }); }).catch(() => new Response('Contenido Offline no disponible'))); });
+                `;
+                try {
+                    const blob = new Blob([swCode], { type: 'application/javascript' });
+                    const swUrl = URL.createObjectURL(blob);
+                    navigator.serviceWorker.register(swUrl).catch(err => console.log('SW Reg failed', err));
+                } catch (e) { console.log('SW setup failed', e); }
+            }
+        }
+
+        function renderMatrixTable() {
+            const tbody = document.getElementById('matrix-tbody');
+            tbody.innerHTML = '';
+            const keys = ['TEM', 'COM', 'LTC', 'CSI', 'PTD', 'AYT', 'AEV', 'MON'];
+            const activeDatabase = currentManual === 'completo' ? ffhhDatabaseCompleto : ffhhDatabaseB767;
+           
+            keys.forEach((key) => {
+                const item = activeDatabase[key];
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-200";
+                tr.innerHTML = `
+                    <td class="p-2.5 text-center font-bold border-r border-slate-200 bg-slate-50/50">
+                        <button onclick="toggleSPOAccordion('${key}')" class="w-full bg-latam-blue hover:bg-blue-700 text-white font-bold py-2 px-3 rounded text-xs shadow-sm flex items-center justify-between transition">
+                            <span>${key}</span><i id="icon-sp-${key}" class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
+                        </button>
+                    </td>
+                    <td class="p-2 border-r border-slate-200"><textarea id="mat_${key}_fase" placeholder="Fase / Maniobra..." class="w-full bg-transparent border-0 p-1 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-indigo-300 rounded"></textarea></td>
+                    <td class="p-2 border-r border-slate-200"><textarea id="mat_${key}_ocurrio" placeholder="¿Qué ocurrió en el vuelo/evento?..." class="w-full bg-transparent border-0 p-1 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-indigo-300 rounded"></textarea></td>
+                    <td class="p-2 border-r border-slate-200"><textarea id="mat_${key}_porque" placeholder="Debriefing: ¿Por qué ocurrió?..." class="w-full bg-transparent border-0 p-1 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-indigo-300 rounded"></textarea></td>
+                    <td class="p-2 border-r border-slate-200 text-center space-y-1.5">
+                        <select id="mat_${key}_ffhh_select" class="w-full bg-slate-100 border border-slate-300 text-slate-800 rounded p-1 text-xs font-semibold">
+                            <option value="FFHH" selected>FFHH</option>${keys.map(k => `<option value="${k}">${k}</option>`).join('')}
+                        </select>
+                        <div class="flex items-center justify-center space-x-1">
+                            <button type="button" onclick="toggleKCMBadge(this)" class="kcm-btn px-1.5 py-0.5 text-[10px] font-bold rounded border border-slate-300 bg-slate-100 text-slate-600 hover:bg-slate-200">K</button>
+                            <button type="button" onclick="toggleKCMBadge(this)" class="kcm-btn px-1.5 py-0.5 text-[10px] font-bold rounded border border-slate-300 bg-slate-100 text-slate-600 hover:bg-slate-200">C</button>
+                            <button type="button" onclick="toggleKCMBadge(this)" class="kcm-btn px-1.5 py-0.5 text-[10px] font-bold rounded border border-slate-300 bg-slate-100 text-slate-600 hover:bg-slate-200">M</button>
+                        </div>
+                    </td>
+                    <td class="p-2"><textarea id="mat_${key}_linea" placeholder="¿Qué aprendí? ¿Qué me llevo a la línea?..." class="w-full bg-transparent border-0 p-1 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-indigo-300 rounded"></textarea></td>
+                `;
+                tbody.appendChild(tr);
+
+                const trSpo = document.createElement('tr');
+                trSpo.id = `spo-row-${key}`;
+                trSpo.className = "hidden bg-indigo-50/70 no-print border-b border-indigo-200";
+                let sposHtml = `<td colspan="6" class="p-4 text-xs text-slate-800"><div class="bg-white rounded-lg p-3 border border-indigo-200 shadow-inner space-y-3"><div class="flex items-center justify-between border-b border-indigo-100 pb-2"><h4 class="font-bold text-latam-navy text-xs uppercase flex items-center"><i class="fa-solid fa-clipboard-check mr-2 text-latam-blue"></i>${item.title}</h4><span class="text-[10px] bg-indigo-100 text-latam-navy px-2 py-0.5 rounded font-mono font-bold">CONDUCTAS OBSERVABLES</span></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">`;
+                item.spos.forEach(spo => {
+                    sposHtml += `<div class="bg-slate-50 p-2.5 rounded border border-slate-200 space-y-1 shadow-sm"><div class="font-bold text-slate-900 text-xs border-b border-slate-200 pb-1 flex justify-between"><span>${spo.code}</span><span class="text-[10px] text-slate-500 font-normal truncate ml-2" title="${spo.title}">${spo.title}</span></div><ul class="list-disc list-inside text-[11px] text-slate-700 space-y-1 pt-1">`;
+                    spo.items.forEach(obs => { sposHtml += `<li>${obs}</li>`; });
+                    sposHtml += `</ul></div>`;
+                });
+                sposHtml += `</div></div></td>`;
+                trSpo.innerHTML = sposHtml;
+                tbody.appendChild(trSpo);
+            });
+        }
+
+        function toggleSPOAccordion(key) {
+            const row = document.getElementById(`spo-row-${key}`);
+            const icon = document.getElementById(`icon-sp-${key}`);
+            if (row.classList.contains('hidden')) { row.classList.remove('hidden'); icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); }
+            else { row.classList.add('hidden'); icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); }
+        }
+
+        function toggleKCMBadge(btn) {
+            if (btn.classList.contains('bg-latam-navy')) { btn.className = "kcm-btn px-1.5 py-0.5 text-[10px] font-bold rounded border border-slate-300 bg-slate-100 text-slate-600 hover:bg-slate-200"; }
+            else { btn.className = "kcm-btn px-1.5 py-0.5 text-[10px] font-bold rounded border border-latam-navy bg-latam-navy text-white shadow-sm"; }
+        }
+
+        function addSupportBlock() {
+            supportBlockCount++;
+            const container = document.getElementById('support-blocks-container');
+            const blockId = `supp_block_${supportBlockCount}`;
+            const blockDiv = document.createElement('div');
+            blockDiv.id = blockId;
+            blockDiv.className = "bg-white p-4 rounded-xl border border-slate-300 shadow-sm space-y-3 relative print:border-slate-400 print:shadow-none";
+            blockDiv.innerHTML = `
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <input type="text" id="${blockId}_topic" placeholder="Maniobra / Tema a profundizar..." class="flex-grow bg-slate-50 border border-slate-300 text-xs sm:text-sm font-medium rounded-md px-3 py-1.5 text-slate-800 placeholder-slate-400 focus:bg-white" />
+                    <div class="w-32 relative"><select id="${blockId}_ffhh" class="w-full bg-latam-lightBlue text-latam-navy font-bold text-xs py-1.5 px-3 rounded border border-indigo-200 appearance-none cursor-pointer"><option value="TEM">FFHH: TEM</option><option value="COM">FFHH: COM</option><option value="LTC">FFHH: LTC</option><option value="CSI">FFHH: CSI</option><option value="PTD">FFHH: PTD</option><option value="AYT">FFHH: AYT</option><option value="AEV" selected>FFHH: AEV</option><option value="MON">FFHH: MON</option></select><i class="fa-solid fa-caret-down absolute right-2.5 top-2.5 text-latam-navy pointer-events-none text-[10px]"></i></div>
+                    <div class="w-36 relative"><select id="${blockId}_nota" class="w-full bg-latam-lightBlue text-latam-navy font-bold text-xs py-1.5 px-3 rounded border border-indigo-200 appearance-none cursor-pointer"><option value="NOTA" selected>NOTA (AEV)</option><option value="0 (OMITIDO)">0 (OMITIDO)</option><option value="1 (BAJO ESTÁNDAR)">1 (BAJO ESTÁNDAR)</option><option value="2 (ESTÁNDAR DEBRIEF)">2 (ESTÁNDAR DEBRIEF)</option><option value="3 (ESTÁNDAR)">3 (ESTÁNDAR)</option><option value="4 (SOBRE ESTÁNDAR)">4 (SOBRE ESTÁNDAR)</option></select><i class="fa-solid fa-caret-down absolute right-2.5 top-2.5 text-latam-navy pointer-events-none text-xs"></i></div>
+                    ${supportBlockCount > 1 ? `<button onclick="removeSupportBlock('${blockId}')" class="no-print text-slate-400 hover:text-red-600 p-1 transition"><i class="fa-solid fa-trash-can text-sm"></i></button>` : ''}
+                </div>
+                <div class="relative">
+                    <select id="${blockId}_qselect" onchange="insertSupportQuestion('${blockId}')" class="w-full bg-latam-lightBlue text-latam-navy font-semibold text-xs sm:text-sm py-2 px-3 rounded border border-indigo-200 appearance-none cursor-pointer hover:bg-blue-200 transition">
+                        <option value="Preguntas" selected>Preguntas</option>${supportQuestionsList.map(q => `<option value="${q}">${q}</option>`).join('')}
+                    </select><i class="fa-solid fa-caret-down absolute right-3 top-3 text-latam-navy pointer-events-none text-xs"></i>
+                </div>
+                <textarea id="${blockId}_notes" placeholder="Notas de debriefing, respuestas del piloto y compromiso..." class="w-full bg-latam-softBlue border border-indigo-200 rounded-lg p-3 text-xs sm:text-sm text-slate-900 placeholder-indigo-400 focus:bg-white focus:border-indigo-400 transition min-h-[70px]"></textarea>
+            `;
+            container.appendChild(blockDiv);
+        }
+
+        function removeSupportBlock(blockId) { const el = document.getElementById(blockId); if (el) el.remove(); }
+
+        function insertSupportQuestion(blockId) {
+            const select = document.getElementById(`${blockId}_qselect`);
+            const notes = document.getElementById(`${blockId}_notes`);
+            if (select.value && select.value !== 'Preguntas') {
+                notes.value += (notes.value.trim() !== '' ? '\n' : '') + `• ${select.value}\n`;
+                showToast("Pregunta insertada en las notas", "info");
+            }
+        }
+
+        function syncQuestionNotes(num) { const select = document.getElementById(`q${num}_select`); showToast(`Pregunta ${num} actualizada`, "info"); }
+
+        function toggleTEM(layer) { const form = document.getElementById(`tem_${layer}_form`); form.classList.toggle('hidden'); }
+
+        function styleSelect(select) {
+            select.classList.remove('res-completo', 'res-satisfactorio', 'res-incompleto', 'res-insatisfactorio');
+            if (select.value === 'COMPLETO' || select.value === 'SATISFACTORIO') select.classList.add('res-completo');
+            else if (select.value === 'INCOMPLETO' || select.value === 'INSATISFACTORIO') select.classList.add('res-incompleto');
+        }
+
+        function showKCMModal(type) {
+            const def = kcmDefinitions[type];
+            document.getElementById('kcm-modal-badge').innerText = type;
+            document.getElementById('kcm-modal-title').innerText = def.title;
+            document.getElementById('kcm-modal-body').innerHTML = def.text;
+            document.getElementById('kcm-modal').classList.remove('hidden');
+        }
+        function closeKCMModal() { document.getElementById('kcm-modal').classList.add('hidden'); }
+
+        function openFFHHModal() {
+            document.getElementById('ffhh-modal').classList.remove('hidden');
+            renderFFHHButtons();
+            document.getElementById('ffhh-modal-content').innerHTML = `<div class="h-full flex flex-col items-center justify-center text-slate-400 space-y-3 min-h-[300px]"><i class="fa-solid fa-hand-pointer text-4xl"></i><p class="text-sm font-medium">Selecciona un Factor Humano a la izquierda</p></div>`;
+        }
+        function closeFFHHModal() { document.getElementById('ffhh-modal').classList.add('hidden'); }
+
+        function openGuideModal() { document.getElementById('guide-modal').classList.remove('hidden'); }
+        function closeGuideModal() { document.getElementById('guide-modal').classList.add('hidden'); }
+
+        function renderFFHHButtons() {
+            const keys = ['TEM', 'COM', 'LTC', 'CSI', 'PTD', 'AYT', 'AEV', 'MON'];
+            document.getElementById('ffhh-modal-buttons').innerHTML = keys.map(k => `
+                <button onclick="showFFHHDetails('${k}')" id="btn-modal-${k}" class="ffhh-modal-btn bg-white border border-slate-300 hover:border-latam-blue hover:bg-latam-softBlue text-latam-navy font-bold py-3 px-4 rounded-xl shadow-sm text-sm transition-all text-left flex justify-between items-center w-full">
+                    <span>${k}</span><i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                </button>
+            `).join('');
+        }
+
+        function showFFHHDetails(key) {
+            const activeDatabase = currentManual === 'completo' ? ffhhDatabaseCompleto : ffhhDatabaseB767;
+            const data = activeDatabase[key];
+            let html = `<div class="border-b-2 border-indigo-100 pb-3 mb-5"><h3 class="text-lg sm:text-xl font-black text-latam-navy flex items-center leading-tight"><span class="bg-latam-blue text-white px-2.5 py-1 rounded text-sm mr-3 shadow">${key}</span>${data.title}</h3></div><div class="space-y-4">`;
+            data.spos.forEach(spo => {
+                html += `<div class="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-sm"><h4 class="font-bold text-latam-navy text-sm mb-3 flex items-start"><i class="fa-solid fa-check-double text-emerald-600 mt-1 mr-2.5"></i><span><span class="text-latam-blue mr-1">${spo.code}:</span> ${spo.title}</span></h4><ul class="list-disc list-outside text-[13px] text-slate-700 space-y-2 ml-7">${spo.items.map(item => `<li class="pl-1">${item}</li>`).join('')}</ul></div>`;
+            });
+            html += `</div>`;
+            document.getElementById('ffhh-modal-content').innerHTML = html;
+
+            document.querySelectorAll('.ffhh-modal-btn').forEach(btn => {
+                if (btn.id === `btn-modal-${key}`) {
+                    btn.classList.add('bg-latam-softBlue', 'border-latam-blue', 'ring-2', 'ring-latam-blue/20');
+                    btn.classList.remove('bg-white', 'border-slate-300');
+                    btn.querySelector('i').classList.replace('text-slate-400', 'text-latam-blue');
+                } else {
+                    btn.classList.remove('bg-latam-softBlue', 'border-latam-blue', 'ring-2', 'ring-latam-blue/20');
+                    btn.classList.add('bg-white', 'border-slate-300');
+                    btn.querySelector('i').classList.replace('text-latam-blue', 'text-slate-400');
+                }
+            });
+        }
+
+        function saveToLocalStorage() {
+            const formData = {};
+            ['event_1', 'result_1', 'event_2', 'result_2', 'event_3', 'result_3'].forEach(id => { formData[id] = document.getElementById(id)?.value || ''; });
+            [1, 2, 3].forEach(n => { formData[`q${n}_select`] = document.getElementById(`q${n}_select`)?.value || ''; formData[`q${n}_notes`] = document.getElementById(`q${n}_notes`)?.value || ''; });
+            ['tdodar_t', 'tdodar_d1', 'tdodar_o', 'tdodar_d2', 'tdodar_a', 'tdodar_r'].forEach(id => { formData[id] = document.getElementById(id)?.value || ''; });
+            ['amenaza', 'error', 'end'].forEach(tier => {
+                formData[`tem_${tier}_pres`] = document.getElementById(`tem_${tier}_pres`)?.value || '';
+                formData[`tem_${tier}_gest`] = document.getElementById(`tem_${tier}_gest`)?.value || '';
+                formData[`tem_${tier}_ayudo`] = document.getElementById(`tem_${tier}_ayudo`)?.value || '';
+                formData[`tem_${tier}_falto`] = document.getElementById(`tem_${tier}_falto`)?.value || '';
+                formData[`tem_${tier}_notas`] = document.getElementById(`tem_${tier}_notas`)?.value || '';
+            });
+            ['TEM', 'COM', 'LTC', 'CSI', 'PTD', 'AYT', 'AEV', 'MON'].forEach(k => {
+                formData[`mat_${k}_fase`] = document.getElementById(`mat_${k}_fase`)?.value || '';
+                formData[`mat_${k}_ocurrio`] = document.getElementById(`mat_${k}_ocurrio`)?.value || '';
+                formData[`mat_${k}_porque`] = document.getElementById(`mat_${k}_porque`)?.value || '';
+                formData[`mat_${k}_ffhh_select`] = document.getElementById(`mat_${k}_ffhh_select`)?.value || 'FFHH';
+                formData[`mat_${k}_linea`] = document.getElementById(`mat_${k}_linea`)?.value || '';
+            });
+            localStorage.setItem('latam_debriefing_aqp_v5', JSON.stringify(formData));
+            showToast("Debriefing guardado correctamente", "success");
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('latam_debriefing_aqp_v5');
+            if (!saved) return;
+            try {
+                const formData = JSON.parse(saved);
+                Object.keys(formData).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.value = formData[id];
+                        if (el.tagName === 'SELECT') styleSelect(el);
+                    }
+                });
+            } catch (e) { console.error("Error al cargar datos guardados:", e); }
+        }
+
+        function clearForm() {
+            if (window.confirm("¿Deseas limpiar todos los campos del debriefing? Se perderán los datos no exportados a PDF.")) {
+                localStorage.removeItem('latam_debriefing_aqp_v5');
+                location.reload();
+            }
+        }
+
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({ title: 'Debriefing AQP LATAM', text: 'Herramienta de Facilitación y Debriefing AQP (Offline)', url: window.location.href })
+                .catch((error) => console.log('Error compartiendo', error));
+            } else {
+                const dummy = document.createElement('input');
+                document.body.appendChild(dummy);
+                dummy.value = window.location.href;
+                dummy.select();
+                document.execCommand('copy');
+                document.body.removeChild(dummy);
+                showToast("Enlace copiado al portapapeles", "info");
+            }
+        }
+
+        function showToast(msg, type = "success") {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            document.getElementById('toast-icon').className = type === "info" ? "fa-solid fa-circle-info text-cyan-400" : "fa-solid fa-circle-check text-emerald-400";
+            toast.classList.remove('hidden');
+            setTimeout(() => { toast.classList.add('hidden'); }, 3000);
+        }
+    </script>
+</body>
+</html>
